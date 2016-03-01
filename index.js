@@ -2,10 +2,10 @@ var cookieparser = require('cookie-parser');
 var debug = require("debug")("express-socket.io-session");
 var crc = require("crc").crc32;
 // The express session object will be set
-// in socket.handskake.session.
+// in socket.conn.request.session.
 
 /**
- * Returns a middleware function that acts on socket.handshake
+ * Returns a middleware function that acts on socket.conn.request
  *
  * @param {Function} expressSessionMiddleware - An express-session middleware function to reuse with io.use
  * @param {Function} cookieParserMiddleware - An express-session middleware function to reuse with express-session
@@ -32,7 +32,7 @@ module.exports = function(expressSessionMiddleware, cookieParserMiddleware, opti
   debug("Creating socket.io middleware");
 
   socketIoSharedSessionMiddleware = function(socket, next) {
-    var req = socket.handshake;
+    var req = socket.conn.request;
     var res = {
       end: function() {}
     };
@@ -42,7 +42,7 @@ module.exports = function(expressSessionMiddleware, cookieParserMiddleware, opti
     var originalId;
     var cookieId;
     var _onevent = socket.onevent;
-    // Override socket.on if autoSave = true; 
+    // Override socket.on if autoSave = true;
     if (options.autoSave === true) {
       debug("Using autoSave feature. express-session middleware will be called on every event received")
       socket.onevent = function() {
