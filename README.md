@@ -14,7 +14,7 @@ $ npm install express-socket.io-session
 
 ## Overview
 
-After every socket connection, you'll have **socket.handshake.session**.
+After every socket connection, you'll have **socket.conn.request.session**.
 That is the same session object `req.session` you get in your route middleware when your app
 uses [express-session](https://www.npmjs.com/package/express-session).
 
@@ -41,15 +41,15 @@ same behaviour.
         saveUninitialized: true
     });
     var sharedsession = require("express-socket.io-session");
-    
+
     // Use express-session middleware for express
     app.use(session);
-    
+
     // Use shared session middleware for socket.io
     // setting autoSave:true
     io.use(sharedsession(session, {
         autoSave:true
-    })); 
+    }));
 
 **Sharing session data with a namespaced socket**
 
@@ -59,7 +59,7 @@ same behaviour.
 
 
 **Using your own custom [cookie-parser](https://www.npmjs.com/package/cookie-parser) instance**
-    
+
     ...
     var cookieParser = require("cookie-parser");
     ...
@@ -97,15 +97,15 @@ $ npm install express socket.io express-session express-socket.io-session
     io.on("connection", function(socket) {
         // Accept a login event with user's data
         socket.on("login", function(userdata) {
-            socket.handshake.session.userdata = userdata;
-            socket.handshake.session.save();
+            socket.conn.request.session.userdata = userdata;
+            socket.conn.request.session.save();
         });
         socket.on("logout", function(userdata) {
-            if (socket.handshake.session.userdata) {
-                delete socket.handshake.session.userdata;
-                socket.handshake.session.save();
+            if (socket.conn.request.session.userdata) {
+                delete socket.conn.request.session.userdata;
+                socket.conn.request.session.save();
             }
-        });        
+        });
     });
 
     server.listen(3000);
@@ -119,7 +119,7 @@ $ npm install express socket.io express-session express-socket.io-session
 
 * **express_session** - This parameter is **required** and must be an express middleware function created with the  [express-session](https://www.npmjs.org/package/express-session) module that allows cookie-based sessions over Express.
 * **cookieparser** - Optional. If you don't provide en instance created by [cookie-parser](https://www.npmjs.org/package/cookie-parser), this module creates one for you with defaults.
-* **options** 
+* **options**
   * **options.autoSave** - Boolean - If true, session will be autosaved if it has been modified
   inside your event handler. Default: `false`.
 
@@ -133,11 +133,11 @@ I wanted to be able to share the modules without affecting regular `express-sess
 
 These modules do the same work but with different approachs on initialization.
 
-* [session.socket.io](https://www.npmjs.org/package/session.socket.io) 
-* [socket.io-session-middleware](https://github.com/peerigon/socket.io-session-middleware) 
+* [session.socket.io](https://www.npmjs.org/package/session.socket.io)
+* [socket.io-session-middleware](https://github.com/peerigon/socket.io-session-middleware)
 
 
-## License 
+## License
 
 The MIT License (MIT)
 

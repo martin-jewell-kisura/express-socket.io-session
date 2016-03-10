@@ -26,7 +26,7 @@ app.use("*", function(req, res, next) {
 });
 // Debugging io
 io.use(function(socket, next) {
-  debug("socket.handshake session data is %j.", socket.handshake.session);
+  debug("socket.conn.request session data is %j.", socket.conn.request.session);
   next();
 });
 
@@ -51,30 +51,30 @@ app.use("/logout", function(req, res, next) {
 
 
 io.on("connection", function(socket) {
-  socket.emit("sessiondata", socket.handshake.session);
+  socket.emit("sessiondata", socket.conn.request.session);
   // Set session data via socket
   debug("Emitting session data");
   socket.on("login", function() {
     debug("Received login message");
-    socket.handshake.session.user = {
+    socket.conn.request.session.user = {
       username: "OSK"
     };
-    debug("socket.handshake session data is %j.", socket.handshake.session);
+    debug("socket.conn.request session data is %j.", socket.conn.request.session);
 
-    // socket.handshake.session.save();
+    // socket.conn.request.session.save();
     //emit logged_in for debugging purposes of this example
-    socket.emit("logged_in", socket.handshake.session);
+    socket.emit("logged_in", socket.conn.request.session);
   });
   // Unset session data via socket
   socket.on("logout", function() {
     debug("Received logout message");
-    socket.handshake.session.user = {};
-    delete socket.handshake.session.logged;
-    // socket.handshake.session.save();
+    socket.conn.request.session.user = {};
+    delete socket.conn.request.session.logged;
+    // socket.conn.request.session.save();
     //emit logged_out for debugging purposes of this example
-    debug("socket.handshake session data is %j.", socket.handshake.session);
+    debug("socket.conn.request session data is %j.", socket.conn.request.session);
 
-    socket.emit("logged_out", socket.handshake.session);
+    socket.emit("logged_out", socket.conn.request.session);
   });
 });
 
